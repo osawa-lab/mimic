@@ -1,3 +1,10 @@
+// use std::fs::File;
+use std::env;
+use std::io::BufRead;
+use std::io::BufReader;
+use std::path::PathBuf;
+use subprocess::Exec;
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct Docs {
     id: String,
@@ -5,6 +12,14 @@ struct Docs {
 }
 
 fn main() {
+    let x = Exec::cmd("ls")
+        .stream_stdout()
+        .expect("assume the command exists.");
+    let mut dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    dir.push("data");
+    // let file = File::open(filename).unwrap();
+    // let reader = BufReader::new(&file);
+
     let s1 = "Hello, world!".to_string();
     let s2 = "Hello, world!".to_string();
     let s3 = "goodnight, world!".to_string();
