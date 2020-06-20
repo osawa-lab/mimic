@@ -22,7 +22,10 @@ fn main() {
     //     println!("{}: {}", i, line.unwrap());
     // }
 
-    let files_under_dir: Vec<_> = br.lines().collect();
+    let files_under_dir: Vec<String> = br
+        .lines()
+        .map(|line| line.expect("lines() return Err"))
+        .collect();
     println!("{:?}", files_under_dir);
     // let file = File::open(filename).unwrap();
     // let reader = BufReader::new(&file);
