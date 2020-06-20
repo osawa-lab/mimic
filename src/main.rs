@@ -14,7 +14,7 @@ struct Docs {
 fn main() {
     let dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "data"].iter().collect();
     let command = format!("ls {}", dir.display());
-    let x = Exec::cmd(command)
+    let x = Exec::shell(command)
         .stream_stdout()
         .expect("assume the command exists.");
     let br = BufReader::new(x);
@@ -22,7 +22,8 @@ fn main() {
     //     println!("{}: {}", i, line.unwrap());
     // }
 
-    let files_under_dir: Vec<_> = br.lines().iter();
+    let files_under_dir: Vec<_> = br.lines().collect();
+    println!("{:?}", files_under_dir);
     // let file = File::open(filename).unwrap();
     // let reader = BufReader::new(&file);
 
