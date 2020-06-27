@@ -1,5 +1,5 @@
-// use std::fs::File;
 use std::env;
+use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::path::PathBuf;
@@ -11,6 +11,16 @@ struct Docs {
     content: String,
 }
 
+fn read_file(filename: &PathBuf) -> String {
+    let file = File::open(filename).unwrap();
+    let reader = BufReader::new(&file);
+    let mut doc = String::new();
+    for line in reader.lines().map(|line| line.expect("lines() return Err")) {
+        doc.push_str(&line);
+    }
+    doc
+}
+
 fn main() {
     let dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "data"].iter().collect();
     let command = format!("ls {}", dir.display());
@@ -18,17 +28,16 @@ fn main() {
         .stream_stdout()
         .expect("assume the command exists.");
     let br = BufReader::new(x);
-    // for (i, line) in br.lines().enumerate() {
-    //     println!("{}: {}", i, line.unwrap());
-    // }
 
-    let files_under_dir: Vec<String> = br
+    let files_under_dir: Vec<PathBuf> = br
         .lines()
-        .map(|line| line.expect("lines() return Err"))
+        .map(|line| PathBuf::from(line.expect("lines() return Err")))
         .collect();
     println!("{:?}", files_under_dir);
-    // let file = File::open(filename).unwrap();
-    // let reader = BufReader::new(&file);
+    for filename in &files_under_dir {
+        println!("{:?}", filename);
+        let doc = read_file(filename);
+    }
 
     let s1 = "Hello, world!".to_string();
     let s2 = "Hello, world!".to_string();
