@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 subprocess = "0.2.4"
+strsim = "*"

@@ -3,6 +3,7 @@ use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::path::PathBuf;
+use strsim::levenshtein;
 use subprocess::Exec;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -50,6 +51,8 @@ fn main() {
 }
 
 fn make_cluster(docs: &Vec<String>) -> Vec<Docs> {
+    let d = levenshtein(&docs[1], &docs[2]);
+    dbg!(d);
     vec![Docs {
         id: "s1234".to_string(),
         content: docs[0].clone(),
