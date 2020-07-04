@@ -36,7 +36,9 @@ fn main() {
     println!("{:?}", files_under_dir);
     for filename in &files_under_dir {
         println!("{:?}", filename);
-        let doc = read_file(filename);
+        let filepath = dir.join(filename);
+        let doc = read_file(&filepath);
+        dbg!(doc);
     }
 
     let s1 = "Hello, world!".to_string();
