@@ -16,8 +16,10 @@ fn read_file(filename: &PathBuf) -> String {
     let file = File::open(filename).unwrap();
     let reader = BufReader::new(&file);
     let mut doc = String::new();
-    for line in reader.lines().map(|line| line.expect("lines() return Err")) {
-        doc.push_str(&line);
+    for line in reader.lines() {
+        if let Ok(l) = line {
+            doc.push_str(&l);
+        }
     }
     doc
 }
