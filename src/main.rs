@@ -3,7 +3,6 @@ use std::fs::read_to_string;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::path::PathBuf;
-use strsim::levenshtein;
 use subprocess::Exec;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -39,20 +38,4 @@ fn main() {
         let doc = read_file(&filepath);
         dbg!(doc);
     }
-
-    let s1 = "Hello, world!".to_string();
-    let s2 = "Hello, world!".to_string();
-    let s3 = "goodnight, world!".to_string();
-    let input_docs = vec![s1, s2, s3];
-    let cluster = make_cluster(&input_docs);
-    println!("{:?}", cluster);
-}
-
-fn make_cluster(docs: &Vec<String>) -> Vec<Docs> {
-    let d = levenshtein(&docs[1], &docs[2]);
-    dbg!(d);
-    vec![Docs {
-        id: "s1234".to_string(),
-        content: docs[0].clone(),
-    }]
 }
