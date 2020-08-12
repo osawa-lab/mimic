@@ -1,5 +1,5 @@
 use std::env;
-use std::fs::File;
+use std::fs::read_to_string;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::path::PathBuf;
@@ -13,13 +13,11 @@ struct Docs {
 }
 
 fn read_file(filename: &PathBuf) -> String {
-    let file = File::open(filename).unwrap();
-    let reader = BufReader::new(&file);
-    let mut doc = String::new();
-    for line in reader.lines().map(|line| line.expect("lines() return Err")) {
-        doc.push_str(&line);
-    }
-    doc
+    let content = match read_to_string(filename) {
+        Ok(content) => content,
+        Err(_) => "fail read:中身読めなかった".to_string(),
+    };
+    content
 }
 
 fn main() {
