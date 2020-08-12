@@ -19,8 +19,7 @@ fn read_file(filename: &PathBuf) -> String {
     content
 }
 
-fn main() {
-    let dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "data"].iter().collect();
+fn run(dir: PathBuf) {
     let command = format!("ls {}", dir.display());
     let x = Exec::shell(command)
         .stream_stdout()
@@ -38,4 +37,17 @@ fn main() {
         let doc = read_file(&filepath);
         dbg!(doc);
     }
+}
+
+#[test]
+fn test() {
+    let dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "tests", "data"]
+        .iter()
+        .collect();
+    run(dir);
+}
+
+fn main() {
+    let dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "data"].iter().collect();
+    run(dir);
 }
