@@ -23,16 +23,14 @@ fn run(dir: PathBuf) {
     let command = format!("ls {}", dir.display());
     let x = Exec::shell(command)
         .stream_stdout()
-        .expect("assume the command exists.");
+        .expect("assume the ls command exists.");
     let br = BufReader::new(x);
 
     let files_under_dir: Vec<PathBuf> = br
         .lines()
         .map(|line| PathBuf::from(line.expect("lines() return Err")))
         .collect();
-    println!("{:?}", files_under_dir);
     for filename in &files_under_dir {
-        println!("{:?}", filename);
         let filepath = dir.join(filename);
         let doc = read_file(&filepath);
         dbg!(doc);
