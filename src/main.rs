@@ -11,6 +11,25 @@ struct Docs {
     content: String,
 }
 
+struct OutPut {
+    score: u32,
+    stdout: String,
+    stderr: String,
+}
+
+struct EvaluationTable {}
+
+impl EvaluationTable {
+    fn new() -> Self {
+        EvaluationTable {}
+    }
+
+    fn evaluate(&mut self, filename: &PathBuf, filepath: &PathBuf) {
+        todo!();
+        let output: OutPut;
+    }
+}
+
 fn read_file(filename: &PathBuf) -> String {
     let content = match read_to_string(filename) {
         Ok(content) => content,
@@ -30,10 +49,12 @@ fn run(dir: PathBuf) {
         .lines()
         .map(|line| PathBuf::from(line.expect("lines() return Err")))
         .collect();
+    let mut evtable = EvaluationTable::new();
     for filename in &files_under_dir {
         let filepath = dir.join(filename);
         let doc = read_file(&filepath);
         dbg!(doc);
+        evtable.evaluate(&filename, &filepath);
     }
 }
 
