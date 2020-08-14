@@ -12,22 +12,34 @@ struct Docs {
 }
 
 struct OutPut {
-    score: u32,
     stdout: String,
     stderr: String,
 }
 
-struct EvaluationTable {}
+struct Evaluation {
+    score: u32,
+}
 
-impl EvaluationTable {
-    fn new() -> Self {
-        EvaluationTable {}
+fn validate_stdout(stdout: String) -> u32 {
+    if stdout == "answer" {
+        5
+    } else {
+        1
     }
+}
 
-    fn evaluate(&mut self, filename: &PathBuf, filepath: &PathBuf) {
-        todo!();
-        let output: OutPut;
-    }
+fn evaluate(filename: &PathBuf, filepath: &PathBuf) -> Evaluation {
+    let output = OutPut {
+        stdout: "hello".to_string(),
+        stderr: "".to_string(),
+    };
+    let OutPut { stdout, stderr } = output;
+    let score = if stderr == "" {
+        0
+    } else {
+        validate_stdout(stdout)
+    };
+    Evaluation { score }
 }
 
 fn read_file(filename: &PathBuf) -> String {
@@ -49,12 +61,11 @@ fn run(dir: PathBuf) {
         .lines()
         .map(|line| PathBuf::from(line.expect("lines() return Err")))
         .collect();
-    let mut evtable = EvaluationTable::new();
+    let mut evtable = Vec::<Evaluation>::new();
     for filename in &files_under_dir {
         let filepath = dir.join(filename);
         let doc = read_file(&filepath);
-        dbg!(doc);
-        evtable.evaluate(&filename, &filepath);
+        evtable.push(evaluate(&filename, &filepath));
     }
 }
 
