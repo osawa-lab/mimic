@@ -50,7 +50,7 @@ fn read_file(filename: &PathBuf) -> String {
     content
 }
 
-fn run(dir: PathBuf) {
+fn run(dir: &PathBuf) {
     let command = format!("ls {}", dir.display());
     let x = Exec::shell(command)
         .stream_stdout()
@@ -77,7 +77,24 @@ fn test() {
     run(dir);
 }
 
+fn check(dir: &PathBuf) -> Result<&PathBuf, String> {
+    if !dir.exists() {
+        Err(format!("{} does not exists", dir.display()))
+    } else if !dir.is_dir() {
+        Err(format!("{} is not a directory", dir.display()))
+    } else {
+        Ok(dir)
+    }
+}
+
 fn main() {
-    let dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "data"].iter().collect();
-    run(dir);
+    let avl_dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "avl"].iter().collect();
+    let maze_dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "maze"].iter().collect();
+    let all_dirs = vec![avl_dir, maze_dir];
+    for checked in all_dirs.iter().map(|d| check(d)) {
+        match checked {
+            Ok(dir) => run(dir),
+            Err(e) => eprintln!("{:?}", e),
+        }
+    }
 }
