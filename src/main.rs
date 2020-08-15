@@ -29,6 +29,10 @@ fn validate_stdout(stdout: String) -> u32 {
 }
 
 fn evaluate(filename: &PathBuf, filepath: &PathBuf) -> Evaluation {
+    let command = format!("gcc {}", filepath.display());
+    let x = Exec::shell(command)
+        .stream_stdout()
+        .expect("gcc maybe exists");
     let output = OutPut {
         stdout: "hello".to_string(),
         stderr: "".to_string(),
@@ -51,18 +55,15 @@ fn read_file(filename: &PathBuf) -> String {
 }
 
 fn run(dir: &PathBuf) {
-    let command = format!("ls {}", dir.display());
-    let x = Exec::shell(command)
-        .stream_stdout()
-        .expect("assume the ls command exists.");
-    let br = BufReader::new(x);
-
-    let files_under_dir: Vec<PathBuf> = br
-        .lines()
-        .map(|line| PathBuf::from(line.expect("lines() return Err")))
-        .collect();
     let mut evtable = Vec::<Evaluation>::new();
-    for filename in &files_under_dir {
+    for entry in std::fs::read_dir(dir){
+        let filename = match entry{
+            Ok(filename)=>filename,
+            Err(e)=>        panic!(
+                "{} ディレクトリのpermissionのせいでファイル一覧が取得できない",
+                dir.display()
+            )
+        }
         let filepath = dir.join(filename);
         let doc = read_file(&filepath);
         evtable.push(evaluate(&filename, &filepath));
