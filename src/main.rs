@@ -56,17 +56,18 @@ fn read_file(filename: &PathBuf) -> String {
 
 fn run(dir: &PathBuf) {
     let mut evtable = Vec::<Evaluation>::new();
-    for entry in std::fs::read_dir(dir){
-        let filename = match entry{
-            Ok(filename)=>filename,
-            Err(e)=>        panic!(
-                "{} ディレクトリのpermissionのせいでファイル一覧が取得できない",
-                dir.display()
-            )
-        }
-        let filepath = dir.join(filename);
+    let readdir = std::fs::read_dir(dir).unwrap_or_else(|_| {
+        panic!(
+            "{} ディレクトリのpermissionのせいでファイル一覧が取得できない",
+            dir.display()
+        )
+    });
+    for entry in readdir {
+        let filename = entry.expect("多分大丈夫").path();
+        let filepath = dir.join(&filename);
         let doc = read_file(&filepath);
-        evtable.push(evaluate(&filename, &filepath));
+        let evaluation = evaluate(&filename, &filepath);
+        evtable.push(evaluation);
     }
 }
 
