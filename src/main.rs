@@ -11,11 +11,6 @@ struct Docs {
     content: String,
 }
 
-struct OutPut {
-    stdout: String,
-    stderr: String,
-}
-
 struct Evaluation {
     id: String,
     score: u32,
@@ -28,6 +23,15 @@ fn validate_stdout(stdout: String) -> u32 {
     } else {
         1
     }
+}
+
+fn filename_to_id(filename: &PathBuf) -> String {
+    filename
+        .file_stem()
+        .expect("filename is normal.")
+        .to_str()
+        .expect("filename is utf-8 valid")
+        .to_string()
 }
 
 fn evaluate(filename: &PathBuf, filepath: &PathBuf) -> Evaluation {
@@ -44,7 +48,7 @@ fn evaluate(filename: &PathBuf, filepath: &PathBuf) -> Evaluation {
     } else {
         validate_stdout(stdout)
     };
-    let id = String::from(filename.file_stem().unwrap_or(filename));
+    let id = filename_to_id(filename);
     Evaluation {
         id,
         score,
