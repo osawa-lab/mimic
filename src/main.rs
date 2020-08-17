@@ -3,7 +3,7 @@ use std::fs::read_to_string;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::path::PathBuf;
-use subprocess::Exec;
+use subprocess::{Exec, Redirection};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct Docs {
@@ -17,7 +17,9 @@ struct OutPut {
 }
 
 struct Evaluation {
+    id: String,
     score: u32,
+    compile_error: String,
 }
 
 fn validate_stdout(stdout: String) -> u32 {
@@ -30,27 +32,32 @@ fn validate_stdout(stdout: String) -> u32 {
 
 fn evaluate(filename: &PathBuf, filepath: &PathBuf) -> Evaluation {
     let command = format!("gcc {}", filepath.display());
-    let x = Exec::shell(command)
-        .stream_stdout()
+    let captured = Exec::shell(command)
+        .stdout(Redirection::Pipe)
+        .stderr(Redirection::Pipe)
+        .capture()
         .expect("gcc maybe exists");
-    let output = OutPut {
-        stdout: "hello".to_string(),
-        stderr: "".to_string(),
-    };
-    let OutPut { stdout, stderr } = output;
+    let stdout = captured.stdout_str();
+    let stderr = captured.stderr_str();
     let score = if stderr == "" {
         0
     } else {
         validate_stdout(stdout)
     };
-    Evaluation { score }
+    let id = String::from(filename.file_stem().unwrap_or(filename));
+    Evaluation {
+        id,
+        score,
+        compile_error: stderr,
+    }
 }
 
 fn read_file(filename: &PathBuf) -> String {
-    let content = match read_to_string(filename) {
+    let mut content = match read_to_string(filename) {
         Ok(content) => content,
         Err(_) => "fail read:中身読めなかった".to_string(),
     };
+    content.push_str("matsubi");
     content
 }
 
@@ -76,7 +83,7 @@ fn test() {
     let dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "tests", "data"]
         .iter()
         .collect();
-    run(dir);
+    run(&dir);
 }
 
 fn check(dir: &PathBuf) -> Result<&PathBuf, String> {
