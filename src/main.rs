@@ -1,7 +1,5 @@
 use std::env;
 use std::fs::read_to_string;
-use std::io::BufRead;
-use std::io::BufReader;
 use std::path::PathBuf;
 use subprocess::{Exec, Redirection};
 
@@ -69,7 +67,7 @@ fn read_file(filename: &PathBuf) -> String {
         Ok(content) => content,
         Err(_) => "fail read:中身読めなかった".to_string(),
     };
-    content.push_str("matsubi");
+    content.push_str("");
     content
 }
 
