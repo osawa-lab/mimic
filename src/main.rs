@@ -22,11 +22,26 @@ enum Output {
 }
 use Output::*;
 
-fn validate_stdout(stdout: String) -> u32 {
-    if stdout == "answer" {
-        5
-    } else {
-        1
+struct Config {
+    dir: PathBuf,
+    score_output: fn(String) -> u32,
+}
+
+impl Config {
+    fn new(dirname: &str, score_output: fn(String) -> u32) -> Self {
+        let dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), dirname].iter().collect();
+        Self { dir, score_output }
+    }
+
+    fn check(self) -> Result<Self, String> {
+        let dir = self.dir;
+        if !dir.exists() {
+            Err(format!("{} does not exists", dir.display()))
+        } else if !dir.is_dir() {
+            Err(format!("{} is not a directory", dir.display()))
+        } else {
+            Ok(self)
+        }
     }
 }
 
@@ -71,7 +86,8 @@ fn read_file(filename: &PathBuf) -> String {
     content
 }
 
-fn run(dir: &PathBuf) {
+fn run(config: Config) {
+    let Config { dir, score_output } = config;
     let mut evtable = Vec::<Evaluation>::new();
     let readdir = std::fs::read_dir(dir).unwrap_or_else(|_| {
         panic!(
@@ -90,7 +106,7 @@ fn run(dir: &PathBuf) {
             CompileErr(err) => err,
         };
         let score = match output {
-            Stdout(stdout) => validate_stdout(stdout),
+            Stdout(stdout) => score_output(stdout),
             CompileErr(_) => 1u32,
         };
         evtable.push(Evaluation {
@@ -109,23 +125,29 @@ fn test() {
     run(&dir);
 }
 
-fn check(dir: &PathBuf) -> Result<&PathBuf, String> {
-    if !dir.exists() {
-        Err(format!("{} does not exists", dir.display()))
-    } else if !dir.is_dir() {
-        Err(format!("{} is not a directory", dir.display()))
+fn avl_score(stdout: String) -> u32 {
+    if stdout == "answer" {
+        5
     } else {
-        Ok(dir)
+        1
+    }
+}
+
+fn maze_score(stdout: String) -> u32 {
+    if stdout == "answer" {
+        5
+    } else {
+        1
     }
 }
 
 fn main() {
-    let avl_dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "avl"].iter().collect();
-    let maze_dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "maze"].iter().collect();
-    let all_dirs = vec![avl_dir, maze_dir];
-    for checked in all_dirs.iter().map(|d| check(d)) {
+    let avl = Config::new("avl", avl_score);
+    let maze = Config::new("maze", maze_score);
+    let all_config = vec![avl, maze];
+    for checked in all_config.iter().map(|config| &config.check()) {
         match checked {
-            Ok(dir) => run(dir),
+            Ok(config) => run(config),
             Err(e) => eprintln!("{:?}", e),
         }
     }
