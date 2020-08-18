@@ -145,7 +145,8 @@ fn main() {
     let avl = Config::new("avl", avl_score);
     let maze = Config::new("maze", maze_score);
     let all_config = vec![avl, maze];
-    for checked in all_config.iter().map(|config| &config.check()) {
+    for config in all_config {
+        let checked = config.check();
         match checked {
             Ok(config) => run(config),
             Err(e) => eprintln!("{:?}", e),
