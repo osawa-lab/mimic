@@ -34,7 +34,7 @@ impl Config {
     }
 
     fn check(self) -> Result<Self, String> {
-        let dir = self.dir;
+        let dir = &self.dir;
         if !dir.exists() {
             Err(format!("{} does not exists", dir.display()))
         } else if !dir.is_dir() {
@@ -89,10 +89,10 @@ fn read_file(filename: &PathBuf) -> String {
 fn run(config: Config) {
     let Config { dir, score_output } = config;
     let mut evtable = Vec::<Evaluation>::new();
-    let readdir = std::fs::read_dir(dir).unwrap_or_else(|_| {
+    let readdir = std::fs::read_dir(&dir).unwrap_or_else(|_| {
         panic!(
             "{} ディレクトリのpermissionのせいでファイル一覧が取得できない",
-            dir.display()
+            &dir.display()
         )
     });
     for entry in readdir {
