@@ -1,5 +1,7 @@
+use csv::Writer;
+use serde::Serialize;
 use std::env;
-use std::fs::read_to_string;
+use std::fs::{read_to_string, File};
 use std::path::PathBuf;
 use subprocess::{Exec, Redirection};
 
@@ -9,6 +11,7 @@ struct Docs {
     content: String,
 }
 
+#[derive(Debug, Serialize)]
 struct Evaluation {
     id: String,
     score: u32,
@@ -86,6 +89,16 @@ fn read_file(filename: &PathBuf) -> String {
     content
 }
 
+fn dump_csv(evtable: Vec<Evaluation>, dir: &PathBuf) {
+    let csvname = dir.with_extension("csv");
+    let csvfile = File::create(csvname)
+        .expect("See https://doc.rust-lang.org/std/fs/struct.OpenOptions.html#errors");
+    let mut wtr = Writer::from_writer(csvfile);
+    for ev in evtable {
+        wtr.serialize(ev).expect("add a record");
+    }
+}
+
 fn run(config: Config) {
     let Config { dir, score_output } = config;
     let mut evtable = Vec::<Evaluation>::new();
@@ -115,6 +128,7 @@ fn run(config: Config) {
             compile_err,
         });
     }
+    dump_csv(evtable, &dir);
 }
 
 #[test]
