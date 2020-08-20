@@ -2,7 +2,7 @@ use csv::Writer;
 use serde::Serialize;
 use std::env;
 use std::fs::{read_to_string, File};
-use std::path::PathBuf;
+use std::path::{Display, PathBuf};
 use subprocess::{Exec, Redirection};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -57,14 +57,6 @@ fn filename_to_id(filename: &PathBuf) -> String {
         .to_string()
 }
 
-fn run_command(command: String) -> String {
-    let captured = Exec::shell(command)
-        .stdout(Redirection::Pipe)
-        .capture()
-        .expect("command shoulf exists");
-    captured.stdout_str()
-}
-
 fn compile_run(filepath: &PathBuf, id: &str) -> Output {
     let exefilepath = filepath.with_file_name(id);
     let exefilepath = exefilepath.display();
@@ -76,8 +68,7 @@ fn compile_run(filepath: &PathBuf, id: &str) -> Output {
         .expect("gcc maybe exists");
     let compile_err = captured.stderr_str();
     if compile_err == "" {
-        let command = format!("./{}", exefilepath);
-        let stdout = vec![run_command(command)];
+        let stdout = run(exefilepath);
         Stdout(stdout)
     } else {
         CompileErr(compile_err)
@@ -141,6 +132,19 @@ fn test() {
         .iter()
         .collect();
     score(&dir);
+}
+
+fn exec_shell(command: String) -> String {
+    let captured = Exec::shell(command)
+        .stdout(Redirection::Pipe)
+        .capture()
+        .expect("command shoulf exists");
+    captured.stdout_str()
+}
+
+fn run(exefilepath: Display) -> Vec<String> {
+    let command = format!("./{}", exefilepath);
+    vec![exec_shell(command)]
 }
 
 fn avl_score_rule(stdout: Vec<String>) -> u32 {
