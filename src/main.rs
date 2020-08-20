@@ -20,18 +20,18 @@ struct Evaluation {
 
 #[derive(Clone)]
 enum Output {
-    Stdout(String),
+    Stdout(Vec<String>),
     CompileErr(String),
 }
 use Output::*;
 
 struct Config {
     dir: PathBuf,
-    score_output: fn(String) -> u32,
+    score_output: fn(Vec<String>) -> u32,
 }
 
 impl Config {
-    fn new(dirname: &str, score_output: fn(String) -> u32) -> Self {
+    fn new(dirname: &str, score_output: fn(Vec<String>) -> u32) -> Self {
         let dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), dirname].iter().collect();
         Self { dir, score_output }
     }
@@ -57,6 +57,14 @@ fn filename_to_id(filename: &PathBuf) -> String {
         .to_string()
 }
 
+fn run_command(command: String) -> String {
+    let captured = Exec::shell(command)
+        .stdout(Redirection::Pipe)
+        .capture()
+        .expect("command shoulf exists");
+    captured.stdout_str()
+}
+
 fn compile_run(filepath: &PathBuf, id: &str) -> Output {
     let exefilepath = filepath.with_file_name(id);
     let exefilepath = exefilepath.display();
@@ -69,11 +77,7 @@ fn compile_run(filepath: &PathBuf, id: &str) -> Output {
     let compile_err = captured.stderr_str();
     if compile_err == "" {
         let command = format!("./{}", exefilepath);
-        let captured = Exec::shell(command)
-            .stdout(Redirection::Pipe)
-            .capture()
-            .unwrap_or_else(|_| panic!("{} should exists", exefilepath));
-        let stdout = captured.stdout_str();
+        let stdout = vec![run_command(command)];
         Stdout(stdout)
     } else {
         CompileErr(compile_err)
@@ -139,16 +143,16 @@ fn test() {
     score(&dir);
 }
 
-fn avl_score_rule(stdout: String) -> u32 {
-    if stdout == "answer" {
+fn avl_score_rule(stdout: Vec<String>) -> u32 {
+    if stdout[0] == "answer" {
         5
     } else {
         1
     }
 }
 
-fn maze_score_rule(stdout: String) -> u32 {
-    if stdout == "answer" {
+fn maze_score_rule(stdout: Vec<String>) -> u32 {
+    if stdout[0] == "answer" {
         5
     } else {
         1
