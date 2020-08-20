@@ -99,7 +99,7 @@ fn dump_csv(evtable: Vec<Evaluation>, dir: &PathBuf) {
     }
 }
 
-fn run(config: Config) {
+fn score(config: Config) {
     let Config { dir, score_output } = config;
     let mut evtable = Vec::<Evaluation>::new();
     let readdir = std::fs::read_dir(&dir).unwrap_or_else(|_| {
@@ -136,10 +136,10 @@ fn test() {
     let dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "tests", "data"]
         .iter()
         .collect();
-    run(&dir);
+    score(&dir);
 }
 
-fn avl_score(stdout: String) -> u32 {
+fn avl_score_rule(stdout: String) -> u32 {
     if stdout == "answer" {
         5
     } else {
@@ -147,7 +147,7 @@ fn avl_score(stdout: String) -> u32 {
     }
 }
 
-fn maze_score(stdout: String) -> u32 {
+fn maze_score_rule(stdout: String) -> u32 {
     if stdout == "answer" {
         5
     } else {
@@ -156,13 +156,13 @@ fn maze_score(stdout: String) -> u32 {
 }
 
 fn main() {
-    let avl = Config::new("avl", avl_score);
-    let maze = Config::new("maze", maze_score);
+    let avl = Config::new("avl", avl_score_rule);
+    let maze = Config::new("maze", maze_score_rule);
     let all_config = vec![avl, maze];
     for config in all_config {
         let checked = config.check();
         match checked {
-            Ok(config) => run(config),
+            Ok(config) => score(config),
             Err(e) => eprintln!("{:?}", e),
         }
     }
