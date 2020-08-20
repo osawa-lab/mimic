@@ -20,7 +20,7 @@ struct Evaluation {
 
 #[derive(Clone)]
 enum Output {
-    Stdout(Vec<String>),
+    Stdouts(Vec<String>),
     CompileErr(String),
 }
 use Output::*;
@@ -68,8 +68,8 @@ fn compile_run(filepath: &PathBuf, id: &str) -> Output {
         .expect("gcc maybe exists");
     let compile_err = captured.stderr_str();
     if compile_err == "" {
-        let stdout = run(exefilepath);
-        Stdout(stdout)
+        let stdouts = run(exefilepath);
+        Stdouts(stdouts)
     } else {
         CompileErr(compile_err)
     }
@@ -110,11 +110,11 @@ fn score(config: Config) {
         let id = filename_to_id(&filename);
         let output = compile_run(&filepath, &id);
         let compile_err = match output.clone() {
-            Stdout(_) => "".to_string(),
+            Stdouts(_) => "".to_string(),
             CompileErr(err) => err,
         };
         let score = match output {
-            Stdout(stdout) => score_output(stdout),
+            Stdouts(stdout) => score_output(stdout),
             CompileErr(_) => 1u32,
         };
         evtable.push(Evaluation {
@@ -142,7 +142,7 @@ fn exec_shell(command: String) -> String {
     captured.stdout_str()
 }
 
-fn run(exefilepath: Display) -> Vec<String> {
+fn avl_run(exefilepath: Display) -> Vec<String> {
     let command = format!("./{}", exefilepath);
     vec![exec_shell(command)]
 }
@@ -153,6 +153,16 @@ fn avl_score_rule(stdout: Vec<String>) -> u32 {
     } else {
         1
     }
+}
+
+fn maze_run(exefilepath: Display) -> Vec<String> {
+    let mut stdouts = Vec::<String>::new();
+    for case in 0..1 {
+        let command = format!("echo a |./{}", exefilepath);
+        let stdout = exec_shell(command);
+        stdouts.push(stdout)
+    }
+    stdouts
 }
 
 fn maze_score_rule(stdout: Vec<String>) -> u32 {
