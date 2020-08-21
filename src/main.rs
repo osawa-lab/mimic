@@ -139,14 +139,6 @@ fn score(config: Config) {
     dump_csv(evtable, &dir);
 }
 
-#[test]
-fn test() {
-    let dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), "tests", "data"]
-        .iter()
-        .collect();
-    score(&dir);
-}
-
 fn exec_shell(command: String) -> String {
     let captured = Exec::shell(command)
         .stdout(Redirection::Pipe)
