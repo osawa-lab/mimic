@@ -27,13 +27,22 @@ use Output::*;
 
 struct Config {
     dir: PathBuf,
+    run: fn(Display) -> Vec<String>,
     score_output: fn(Vec<String>) -> u32,
 }
 
 impl Config {
-    fn new(dirname: &str, score_output: fn(Vec<String>) -> u32) -> Self {
+    fn new(
+        dirname: &str,
+        run: fn(Display) -> Vec<String>,
+        score_output: fn(Vec<String>) -> u32,
+    ) -> Self {
         let dir: PathBuf = [env!("CARGO_MANIFEST_DIR"), dirname].iter().collect();
-        Self { dir, score_output }
+        Self {
+            dir,
+            run,
+            score_output,
+        }
     }
 
     fn check(self) -> Result<Self, String> {
@@ -57,7 +66,7 @@ fn filename_to_id(filename: &PathBuf) -> String {
         .to_string()
 }
 
-fn compile_run(filepath: &PathBuf, id: &str) -> Output {
+fn compile_run(filepath: &PathBuf, id: &str, run: fn(Display) -> Vec<String>) -> Output {
     let exefilepath = filepath.with_file_name(id);
     let exefilepath = exefilepath.display();
     let filepath = filepath.display();
@@ -95,7 +104,11 @@ fn dump_csv(evtable: Vec<Evaluation>, dir: &PathBuf) {
 }
 
 fn score(config: Config) {
-    let Config { dir, score_output } = config;
+    let Config {
+        dir,
+        run,
+        score_output,
+    } = config;
     let mut evtable = Vec::<Evaluation>::new();
     let readdir = std::fs::read_dir(&dir).unwrap_or_else(|_| {
         panic!(
@@ -106,9 +119,9 @@ fn score(config: Config) {
     for entry in readdir {
         let filename = entry.expect("多分大丈夫").path();
         let filepath = dir.join(&filename);
-        let doc = read_file(&filepath);
+        let _doc = read_file(&filepath);
         let id = filename_to_id(&filename);
-        let output = compile_run(&filepath, &id);
+        let output = compile_run(&filepath, &id, run);
         let compile_err = match output.clone() {
             Stdouts(_) => "".to_string(),
             CompileErr(err) => err,
@@ -157,7 +170,7 @@ fn avl_score_rule(stdout: Vec<String>) -> u32 {
 
 fn maze_run(exefilepath: Display) -> Vec<String> {
     let mut stdouts = Vec::<String>::new();
-    for case in 0..1 {
+    for _case in 0..1 {
         let command = format!("echo a |./{}", exefilepath);
         let stdout = exec_shell(command);
         stdouts.push(stdout)
@@ -174,8 +187,8 @@ fn maze_score_rule(stdout: Vec<String>) -> u32 {
 }
 
 fn main() {
-    let avl = Config::new("avl", avl_score_rule);
-    let maze = Config::new("maze", maze_score_rule);
+    let avl = Config::new("avl", avl_run, avl_score_rule);
+    let maze = Config::new("maze", maze_run, maze_score_rule);
     let all_config = vec![avl, maze];
     for config in all_config {
         let checked = config.check();
