@@ -160,6 +160,14 @@ fn avl_score_rule(stdout: Vec<String>) -> u32 {
     }
 }
 
+#[test]
+fn test_avl_score_rule() {
+    let input = r###"a"###.to_string();
+    let score = avl_score_rule(vec![input]);
+    assert_eq!(score, 1);
+    OK(())
+}
+
 fn maze_run(exefilepath: Display) -> Vec<String> {
     let mut stdouts = Vec::<String>::new();
     for _case in 0..1 {
@@ -176,6 +184,15 @@ fn maze_score_rule(stdout: Vec<String>) -> u32 {
     } else {
         1
     }
+}
+
+#[test]
+fn test_maze_score_rule() {
+    let input_a = r###"a"###.to_string();
+    let input_b = r###"a"###.to_string();
+    let score = maze_score_rule(vec![input_a,input_b]);
+    assert_eq!(score, 1);
+    OK(())
 }
 
 fn main() {
