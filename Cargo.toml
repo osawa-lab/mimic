@@ -10,3 +10,4 @@ edition = "2018"
 subprocess = "0.2.4"
 csv = "1.1"
 serde = { version = "1", features = ["derive"] }
+regex = "*"

@@ -1,4 +1,5 @@
 use csv::Writer;
+use regex::Regex;
 use serde::Serialize;
 use std::env;
 use std::fs::{read_to_string, File};
@@ -152,20 +153,41 @@ fn avl_run(exefilepath: Display) -> Vec<String> {
     vec![exec_shell(command)]
 }
 
-fn avl_score_rule(stdout: Vec<String>) -> u32 {
-    if stdout[0] == "answer" {
-        5
-    } else {
-        1
+fn avl_extract_answer(input: &str) -> Option<u32> {
+    let re1 = Regex::new(r"ans1=(\d)+").unwrap();
+    match re1.captures(&input) {
+        None => None,
+        Some(cap) => {
+            let dstr = cap.get(1).unwrap().as_str();
+            Some(dstr.parse::<u32>().unwrap())
+        }
     }
 }
 
 #[test]
+fn test_avl_extract_answer() {
+    let input = "ans1=1".to_string();
+    let parsed = avl_extract_answer(&input);
+    assert_eq!(parsed, Some(1u32));
+}
+
+fn avl_score_rule(stdout: Vec<String>) -> u32 {
+    assert_eq!(stdout.len(), 1);
+    let mut score = 0;
+    score
+}
+
+#[test]
 fn test_avl_score_rule() {
-    let input = r###"a"###.to_string();
+    let input = r###"
+ans1=1\n
+ans2=2\n
+ans3=3\n
+ans4=4\n
+ans5=5\n"###
+        .to_string();
     let score = avl_score_rule(vec![input]);
     assert_eq!(score, 1);
-    OK(())
 }
 
 fn maze_run(exefilepath: Display) -> Vec<String> {
@@ -190,9 +212,8 @@ fn maze_score_rule(stdout: Vec<String>) -> u32 {
 fn test_maze_score_rule() {
     let input_a = r###"a"###.to_string();
     let input_b = r###"a"###.to_string();
-    let score = maze_score_rule(vec![input_a,input_b]);
+    let score = maze_score_rule(vec![input_a, input_b]);
     assert_eq!(score, 1);
-    OK(())
 }
 
 fn main() {
