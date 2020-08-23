@@ -206,8 +206,9 @@ ans5=5\n"###
 
 fn maze_run(exefilepath: Display) -> Vec<String> {
     let mut stdouts = Vec::<String>::new();
-    for _case in 0..1 {
-        let command = format!("echo a |./{}", exefilepath);
+    let args = vec![("a", "maze_data_queue1.txt"), ("b", "maze_data_stack1.txt")];
+    for (maze_type, filename) in args {
+        let command = format!("echo {} {} |./{}", maze_type, filename, exefilepath);
         let stdout = exec_shell(command);
         stdouts.push(stdout)
     }
