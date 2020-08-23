@@ -158,7 +158,7 @@ fn avl_run(exefilepath: Display) -> Vec<String> {
 
 fn avl_extract_answer(p_num: u32, input: &str) -> Option<u32> {
     let numstr = p_num.to_string();
-    let re = Regex::new(&format!("ans{}=(\\d)+", numstr)).unwrap();
+    let re = Regex::new(&format!("ans{}=(\\d+)", numstr)).unwrap();
     match re.captures(&input) {
         None => None,
         Some(cap) => {
@@ -170,9 +170,9 @@ fn avl_extract_answer(p_num: u32, input: &str) -> Option<u32> {
 
 #[test]
 fn test_avl_extract_answer() {
-    let input = "ans1=1".to_string();
+    let input = "ans1=12".to_string();
     let parsed = avl_extract_answer(1, &input);
-    assert_eq!(parsed, Some(1u32));
+    assert_eq!(parsed, Some(12u32));
 }
 
 fn avl_score_rule(stdout: Vec<String>) -> u32 {
