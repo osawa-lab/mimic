@@ -107,7 +107,7 @@ fn dump_csv(evtable: Vec<Evaluation>, dir: &PathBuf) {
     }
 }
 
-fn score(config: Config) {
+fn score(config: Config) -> (Vec<Evaluation>, PathBuf) {
     let Config {
         dir,
         run,
@@ -140,7 +140,7 @@ fn score(config: Config) {
             compile_err,
         });
     }
-    dump_csv(evtable, &dir);
+    (evtable, dir)
 }
 
 fn exec_shell(command: String) -> String {
@@ -230,6 +230,30 @@ fn maze_score_rule(stdout: Vec<String>) -> u32 {
     score
 }
 
+#[test]
+fn test_avl_score() {
+    let avl = Config {
+        dir: ["tests", "avl"].iter().collect(),
+        run: avl_run,
+        score_output: avl_score_rule,
+    };
+    let (evtable, _dir) = score(avl);
+    let expected_evtable = vec![];
+    assert_eq!(expected_evtable, evtable);
+}
+
+#[test]
+fn test_maze_score() {
+    let maze = Config {
+        dir: ["tests", "maze"].iter().collect(),
+        run: maze_run,
+        score_output: maze_score_rule,
+    };
+    let (evtable, _dir) = score(maze);
+    let expected_evtable = vec![];
+    assert_eq!(expected_evtable, evtable);
+}
+
 fn main() {
     let avl = Config::new("avl", avl_run, avl_score_rule);
     let maze = Config::new("maze", maze_run, maze_score_rule);
@@ -237,7 +261,10 @@ fn main() {
     for config in all_config {
         let checked = config.check();
         match checked {
-            Ok(config) => score(config),
+            Ok(config) => {
+                let (evtable, dir) = score(config);
+                dump_csv(evtable, &dir);
+            }
             Err(e) => eprintln!("{:?}", e),
         }
     }
