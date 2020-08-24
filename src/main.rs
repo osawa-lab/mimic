@@ -216,19 +216,18 @@ fn maze_run(exefilepath: Display) -> Vec<String> {
 }
 
 fn maze_score_rule(stdout: Vec<String>) -> u32 {
-    if stdout[0] == "answer" {
-        5
-    } else {
-        1
-    }
-}
+    let answer_a = PathBuf::from("maze_a_answer.txt");
+    assert!(answer_a.exists());
+    let answer_b = PathBuf::from("maze_b_answer.txt");
+    assert!(answer_b.exists());
+    let answer_a = read_to_string(answer_a).expect("exists but fail to read");
+    let answer_b = read_to_string(answer_b).expect("exists but fail to read");
 
-#[test]
-fn test_maze_score_rule() {
-    let input_a = r###"a"###.to_string();
-    let input_b = r###"a"###.to_string();
-    let score = maze_score_rule(vec![input_a, input_b]);
-    assert_eq!(score, 1);
+    assert_eq!(stdout.len(), 2);
+    let mut score: u32 = 0;
+    score += if stdout[0] == answer_a { 5 } else { 1 };
+    score += if stdout[1] == answer_b { 5 } else { 1 };
+    score
 }
 
 fn main() {
