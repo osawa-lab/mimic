@@ -225,8 +225,8 @@ fn maze_score_rule(stdout: Vec<String>) -> u32 {
 
     assert_eq!(stdout.len(), 2);
     let mut score: u32 = 0;
-    score += if stdout[0] == answer_a { 5 } else { 1 };
-    score += if stdout[1] == answer_b { 5 } else { 1 };
+    score += if stdout[0].contains(&answer_a) { 5 } else { 1 };
+    score += if stdout[1].contains(&answer_b) { 5 } else { 1 };
     score
 }
 
