@@ -70,8 +70,8 @@ fn filename_to_id(filename: &PathBuf) -> String {
         .to_string()
 }
 
-fn compile_run(filepath: &PathBuf, id: &str, run: fn(Display) -> Vec<String>) -> Output {
-    let exefilepath = filepath.with_file_name(id);
+fn compile_run(filepath: &PathBuf, exefilename: &str, run: fn(Display) -> Vec<String>) -> Output {
+    let exefilepath = filepath.with_file_name(exefilename);
     let exefilepath = exefilepath.display();
     let filepath = filepath.display();
     let command = format!("gcc {} -o {}", filepath, exefilepath);
@@ -124,7 +124,8 @@ fn score(config: Config) -> (Vec<Evaluation>, PathBuf) {
         let filepath = entry.expect("多分大丈夫").path();
         let _doc = read_file(&filepath);
         let id = filename_to_id(&filepath);
-        let output = compile_run(&filepath, &id, run);
+        let exefilename = format!("{}.out", &id);
+        let output = compile_run(&filepath, &exefilename, run);
         let compile_err = match output.clone() {
             Stdouts(_) => "".to_string(),
             CompileErr(err) => err,
