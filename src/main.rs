@@ -4,6 +4,7 @@ use serde::Serialize;
 use std::env;
 use std::{
     convert::TryInto,
+    ffi::OsStr,
     fs::{read_to_string, File},
     path::{Display, PathBuf},
 };
@@ -74,8 +75,6 @@ fn compile_run(filepath: &PathBuf, exefilename: &str, run: fn(Display) -> Vec<St
     let exefilepath = filepath.with_file_name(exefilename);
     let exefilepath = exefilepath.display();
     let filepath = filepath.display();
-    dbg!(&filepath);
-    dbg!(&exefilepath);
     let command = format!("gcc {} -o {}", filepath, exefilepath);
     let captured = Exec::shell(command)
         .stderr(Redirection::Pipe)
@@ -124,6 +123,9 @@ fn score(config: Config) -> (Vec<Evaluation>, PathBuf) {
     });
     for entry in readdir {
         let source_fullpath = entry.expect("多分大丈夫").path();
+        if source_fullpath.extension() != Some(OsStr::new("c")) {
+            continue;
+        }
         let _doc = read_file(&source_fullpath);
         let id = filename_to_id(&source_fullpath);
         let exefilename = format!("{}.out", &id);
