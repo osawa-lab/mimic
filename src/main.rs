@@ -74,6 +74,8 @@ fn compile_run(filepath: &PathBuf, exefilename: &str, run: fn(Display) -> Vec<St
     let exefilepath = filepath.with_file_name(exefilename);
     let exefilepath = exefilepath.display();
     let filepath = filepath.display();
+    dbg!(&filepath);
+    dbg!(&exefilepath);
     let command = format!("gcc {} -o {}", filepath, exefilepath);
     let captured = Exec::shell(command)
         .stderr(Redirection::Pipe)
