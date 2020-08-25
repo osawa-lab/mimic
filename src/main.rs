@@ -64,7 +64,7 @@ impl Config {
 fn filename_to_id(filename: &PathBuf) -> String {
     filename
         .file_stem()
-        .expect("filename is normal.")
+        .expect("this file must exist.")
         .to_str()
         .expect("filename is utf-8 valid")
         .to_string()
@@ -121,10 +121,9 @@ fn score(config: Config) -> (Vec<Evaluation>, PathBuf) {
         )
     });
     for entry in readdir {
-        let filename = entry.expect("多分大丈夫").path();
-        let filepath = dir.join(&filename);
+        let filepath = entry.expect("多分大丈夫").path();
         let _doc = read_file(&filepath);
-        let id = filename_to_id(&filename);
+        let id = filename_to_id(&filepath);
         let output = compile_run(&filepath, &id, run);
         let compile_err = match output.clone() {
             Stdouts(_) => "".to_string(),
