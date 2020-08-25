@@ -15,7 +15,7 @@ struct Docs {
     content: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Eq, PartialEq, Serialize)]
 struct Evaluation {
     id: String,
     score: u32,
@@ -238,7 +238,11 @@ fn test_avl_score() {
         score_output: avl_score_rule,
     };
     let (evtable, _dir) = score(avl);
-    let expected_evtable = vec![];
+    let expected_evtable = vec![Evaluation {
+        id: "avl".to_string(),
+        score: 5,
+        compile_err: String::new(),
+    }];
     assert_eq!(expected_evtable, evtable);
 }
 
@@ -250,7 +254,11 @@ fn test_maze_score() {
         score_output: maze_score_rule,
     };
     let (evtable, _dir) = score(maze);
-    let expected_evtable = vec![];
+    let expected_evtable = vec![Evaluation {
+        id: "maze".to_string(),
+        score: 5,
+        compile_err: String::new(),
+    }];
     assert_eq!(expected_evtable, evtable);
 }
 
