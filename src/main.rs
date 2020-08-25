@@ -121,13 +121,13 @@ fn score(config: Config) -> (Vec<Evaluation>, PathBuf) {
         )
     });
     for entry in readdir {
-        let filepath = entry.expect("多分大丈夫").path();
-        let _doc = read_file(&filepath);
-        let id = filename_to_id(&filepath);
+        let source_fullpath = entry.expect("多分大丈夫").path();
+        let _doc = read_file(&source_fullpath);
+        let id = filename_to_id(&source_fullpath);
         let exefilename = format!("{}.out", &id);
-        let output = compile_run(&filepath, &exefilename, run);
+        let output = compile_run(&source_fullpath, &exefilename, run);
         let compile_err = match output.clone() {
-            Stdouts(_) => "".to_string(),
+            Stdouts(_) => String::new(),
             CompileErr(err) => err,
         };
         let score = match output {
