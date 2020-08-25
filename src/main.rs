@@ -237,7 +237,9 @@ fn test_avl_score() {
         run: avl_run,
         score_output: avl_score_rule,
     };
-    let (evtable, _dir) = score(avl);
+    let checked = avl.check();
+    assert!(checked.is_ok());
+    let (evtable, _dir) = score(checked.unwrap());
     let expected_evtable = vec![Evaluation {
         id: "avl".to_string(),
         score: 5,
@@ -253,7 +255,9 @@ fn test_maze_score() {
         run: maze_run,
         score_output: maze_score_rule,
     };
-    let (evtable, _dir) = score(maze);
+    let checked = maze.check();
+    assert!(checked.is_ok());
+    let (evtable, _dir) = score(checked.unwrap());
     let expected_evtable = vec![Evaluation {
         id: "maze".to_string(),
         score: 5,
