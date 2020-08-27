@@ -57,7 +57,17 @@ impl Config {
         } else if !dir.is_dir() {
             Err(format!("{} is not a directory", dir.display()))
         } else {
-            Ok(self)
+            let mut readdir = std::fs::read_dir(&dir).unwrap_or_else(|_| {
+                panic!(
+                    "{} ディレクトリのpermissionのせいでファイル一覧が取得できない",
+                    &dir.display()
+                )
+            });
+            match readdir.next() {
+                None => Err(format!("{} has no source file.", dir.display())),
+
+                Some(_) => Ok(self),
+            }
         }
     }
 }
