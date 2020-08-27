@@ -136,7 +136,7 @@ fn score(config: Config) -> (Vec<Evaluation>, PathBuf) {
         };
         let score = match output {
             Stdouts(stdout) => score_output(stdout),
-            CompileErr(_) => 1u32,
+            CompileErr(_) => 0u32,
         };
         evtable.push(Evaluation {
             id,
@@ -188,7 +188,7 @@ fn avl_score_rule(stdout: Vec<String>) -> u32 {
             avl_extract_answer((p_num + 1).try_into().unwrap(), &stdout[0])
         {
             if correct_answer == student_answer {
-                score += 1;
+                score += 4;
             }
         }
     }
@@ -205,7 +205,7 @@ ans4=4\n
 ans5=5\n"###
         .to_string();
     let score = avl_score_rule(vec![input]);
-    assert_eq!(score, 5);
+    assert_eq!(score, 20);
 }
 
 fn maze_run(exefilepath: Display) -> Vec<String> {
@@ -234,8 +234,8 @@ fn maze_score_rule(stdout: Vec<String>) -> u32 {
 
     assert_eq!(stdout.len(), 2);
     let mut score: u32 = 0;
-    score += if stdout[0].contains(&answer_a) { 5 } else { 1 };
-    score += if stdout[1].contains(&answer_b) { 5 } else { 1 };
+    score += if stdout[0].contains(&answer_a) { 10 } else { 0 };
+    score += if stdout[1].contains(&answer_b) { 10 } else { 0 };
     score
 }
 
@@ -251,7 +251,7 @@ fn test_avl_score() {
     let (evtable, _dir) = score(checked.unwrap());
     let expected_evtable = vec![Evaluation {
         id: "avl".to_string(),
-        score: 5,
+        score: 20,
         compile_err: String::new(),
     }];
     assert_eq!(expected_evtable, evtable);
@@ -269,7 +269,7 @@ fn test_maze_score() {
     let (evtable, _dir) = score(checked.unwrap());
     let expected_evtable = vec![Evaluation {
         id: "maze".to_string(),
-        score: 5,
+        score: 20,
         compile_err: String::new(),
     }];
     assert_eq!(expected_evtable, evtable);
