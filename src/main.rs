@@ -182,7 +182,7 @@ fn test_avl_extract_answer() {
 fn avl_score_rule(stdout: Vec<String>) -> u32 {
     assert_eq!(stdout.len(), 1);
     let mut score = 0;
-    let answers: Vec<u32> = vec![1, 2, 3, 4, 5];
+    let answers: Vec<u32> = vec![64, 6, 50, 88, 1];
     for (p_num, &correct_answer) in answers.iter().enumerate() {
         if let Some(student_answer) =
             avl_extract_answer((p_num + 1).try_into().unwrap(), &stdout[0])
@@ -198,11 +198,11 @@ fn avl_score_rule(stdout: Vec<String>) -> u32 {
 #[test]
 fn test_avl_score_rule() {
     let input = r###"
-ans1=1\n
-ans2=2\n
-ans3=3\n
-ans4=4\n
-ans5=5\n"###
+ans1=64\n
+ans2=6\n
+ans3=50\n
+ans4=88\n
+ans5=1\n"###
         .to_string();
     let score = avl_score_rule(vec![input]);
     assert_eq!(score, 20);
