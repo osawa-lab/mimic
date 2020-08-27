@@ -123,6 +123,7 @@ fn score(config: Config) -> (Vec<Evaluation>, PathBuf) {
     });
     for entry in readdir {
         let source_fullpath = entry.expect("多分大丈夫").path();
+        assert!(source_fullpath.is_absolute());
         if source_fullpath.extension() != Some(OsStr::new("c")) {
             continue;
         }
@@ -156,7 +157,7 @@ fn exec_shell(command: String) -> String {
 }
 
 fn avl_run(exefilepath: Display) -> Vec<String> {
-    let command = format!("./{}", exefilepath);
+    let command = format!("{}", exefilepath);
     vec![exec_shell(command)]
 }
 
@@ -217,7 +218,7 @@ fn maze_run(exefilepath: Display) -> Vec<String> {
     for (maze_type, filename) in args {
         assert!(filename.exists());
         let filename = filename.display();
-        let command = format!("echo {} {} |./{}", maze_type, filename, exefilepath);
+        let command = format!("echo {} {} |{}", maze_type, filename, exefilepath);
         let stdout = exec_shell(command);
         stdouts.push(stdout)
     }
@@ -241,11 +242,7 @@ fn maze_score_rule(stdout: Vec<String>) -> u32 {
 
 #[test]
 fn test_avl_score() {
-    let avl = Config {
-        dir: ["tests", "avl"].iter().collect(),
-        run: avl_run,
-        score_output: avl_score_rule,
-    };
+    let avl = Config::new("tests/avl", avl_run, avl_score_rule);
     let checked = avl.check();
     assert!(checked.is_ok());
     let (evtable, _dir) = score(checked.unwrap());
@@ -259,11 +256,7 @@ fn test_avl_score() {
 
 #[test]
 fn test_maze_score() {
-    let maze = Config {
-        dir: ["tests", "maze"].iter().collect(),
-        run: maze_run,
-        score_output: maze_score_rule,
-    };
+    let maze = Config::new("tests/maze", maze_run, maze_score_rule);
     let checked = maze.check();
     assert!(checked.is_ok());
     let (evtable, _dir) = score(checked.unwrap());
