@@ -89,9 +89,8 @@ fn filename_to_id(filename: &PathBuf) -> String {
 
 fn compile_run(filepath: &PathBuf, exefilename: &str, run: fn(Display) -> Vec<String>) -> Output {
     let exefilepath = filepath.with_file_name(exefilename);
-    let new_filepath = filepath.with_file_name(exefilename).with_extension("c");
     let exefilepath = exefilepath.display();
-    std::fs::copy(filepath, &new_filepath).unwrap();
+    let new_filepath = filepath.with_file_name(exefilename).with_extension("c");
     let filepath = new_filepath;
     let filepath = filepath.display();
     let command = format!("gcc {} -o {}", filepath, exefilepath);
