@@ -79,8 +79,12 @@ fn filename_to_id(filename: &PathBuf) -> String {
         .to_str()
         .expect("filename is utf-8 valid")
         .to_string();
-    let splitted: Vec<_> = raw_filename.split("_").collect();
-    splitted[0].to_string()
+    let splitted: Vec<_> = raw_filename.split('_').collect();
+    if splitted.len() == 1 {
+        splitted[0].to_string()
+    } else {
+        splitted[1].to_string()
+    }
 }
 
 fn compile_run(filepath: &PathBuf, exefilename: &str, run: fn(Display) -> Vec<String>) -> Output {
