@@ -90,10 +90,8 @@ fn filename_to_id(filename: &PathBuf) -> String {
 fn compile_run(filepath: &PathBuf, exefilename: &str, run: fn(Display) -> Vec<String>) -> Output {
     let exefilepath = filepath.with_file_name(exefilename);
     let exefilepath = exefilepath.display();
-    let new_filepath = filepath.with_file_name(exefilename).with_extension("c");
-    let filepath = new_filepath;
     let filepath = filepath.display();
-    let command = format!("gcc {} -o {}", filepath, exefilepath);
+    let command = format!("gcc \"{}\" -o \"{}\"", filepath, exefilepath);
     let captured = Exec::shell(command)
         .stderr(Redirection::Pipe)
         .capture()
@@ -175,7 +173,7 @@ fn exec_shell(command: String) -> String {
 }
 
 fn avl_run(exefilepath: Display) -> Vec<String> {
-    let command = format!("{}", exefilepath);
+    let command = format!("\"{}\"", exefilepath);
     vec![exec_shell(command)]
 }
 
@@ -236,7 +234,10 @@ fn maze_run(exefilepath: Display) -> Vec<String> {
     for (maze_type, filename) in args {
         assert!(filename.exists());
         let filename = filename.display();
-        let command = format!("echo {} {} |{}", maze_type, filename, exefilepath);
+        let command = format!(
+            "echo \"{}\" \"{}\" | \"{}\"",
+            maze_type, filename, exefilepath
+        );
         let stdout = exec_shell(command);
         stdouts.push(stdout)
     }
