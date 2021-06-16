@@ -192,6 +192,9 @@ int insert_table_a(cell_oa_t *r, cell_oa_t **hashtbl) {
         if(hashtbl[h]->flag == NIL || hashtbl[h]->flag == DEL) {
             hashtbl[h] = r;
             return 1;
+        } else if(strcmp(hashtbl[h]->nickname, r->nickname) == 0) {
+            printf("double registration! :%s\n", r->nickname);
+            return -1;
         } else {
             h = double_hash(r->nickname, h0, i);
             i++;
@@ -297,8 +300,10 @@ int insert_table_b(cell_ch_t *r, cell_ch_t **hashtbl){
         return h;
     } else {
         p = hashtbl[h];
-        if(strcmp(r->nickname, p->nickname) == 0)
+        if(strcmp(r->nickname, p->nickname) == 0) {
+            printf("double registration! :%s\n", r->nickname);
             return -1;
+        }
         hashtbl[h] = r;
         r->next = p;
         return h;
