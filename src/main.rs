@@ -287,10 +287,61 @@ fn test_maze_score() {
     assert_eq!(expected_evtable, evtable);
 }
 
+/* hash */
+fn hash_run(exefilepath: Display) -> Vec<String> {
+    let mut stdouts = Vec::<String>::new();
+    let args = vec![
+        ("a", PathBuf::from("hash_data.csv")),
+        ("b", PathBuf::from("hash_data.csv")),
+    ];
+    for (maze_type, filename) in args {
+        assert!(filename.exists());
+        let filename = filename.display();
+        let command = format!(
+            "echo \"{}\" \"{}\" | \"{}\"",
+            maze_type, filename, exefilepath
+        );
+        let stdout = exec_shell(command);
+        stdouts.push(stdout)
+    }
+    stdouts
+}
+
+fn hash_score_rule(stdout: Vec<String>) -> u32 {
+    let answer_a = PathBuf::from("hash_a_answer.txt");
+    assert!(answer_a.exists());
+    let answer_b = PathBuf::from("hash_b_answer.txt");
+    assert!(answer_b.exists());
+    let answer_a = read_to_string(answer_a).expect("exists but fail to read");
+    let answer_b = read_to_string(answer_b).expect("exists but fail to read");
+
+    assert_eq!(stdout.len(), 2);
+    let mut score: u32 = 0;
+    score += if stdout[0].contains(&answer_a) { 10 } else { 0 };
+    score += if stdout[1].contains(&answer_b) { 10 } else { 0 };
+    score
+}
+
+#[test]
+fn test_hash_score() {
+    let hash = Config::new("tests/hash", hash_run, hash_score_rule);
+    let checked = hash.check();
+    assert!(checked.is_ok());
+    let (evtable, _dir) = score(checked.unwrap());
+    let expected_evtable = vec![Evaluation {
+        id: "hash".to_string(),
+        score: 20,
+        compile_err: String::new(),
+    }];
+    assert_eq!(expected_evtable, evtable);
+}
+
+
 fn main() {
     let avl = Config::new("avl", avl_run, avl_score_rule);
     let maze = Config::new("maze", maze_run, maze_score_rule);
-    let all_config = vec![avl, maze];
+    let hash = Config::new("hash", hash_run, hash_score_rule);
+    let all_config = vec![avl, maze, hash];
     for config in all_config {
         let checked = config.check();
         match checked {
