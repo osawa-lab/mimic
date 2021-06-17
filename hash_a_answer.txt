@@ -1,51 +1,59 @@
-table[0]: {Frank:Francis}
-table[1]: {Dolly:Dorothy}
-table[3]: {Ricky:Patrick}
-table[4]: {Nate:Nathan}
-table[5]: {Larry:Lawrence}
-table[7]: {Abbie:Abigail}
-table[9]: {Ike:Isaac}
-table[12]: {Will:William}
-table[15]: {Mae:Mary}
-table[16]: {Gerry:Gerald}
-table[20]: {Sean:John}
-table[21]: {Rose:Rosemary}
-table[22]: {Mike:Michael}
-table[23]: {Nell:Ellen}
-table[28]: {Leo:Leonard}
-table[29]: {Kim:Kimberly}
-table[30]: {Kate:Katharine}
-table[31]: {Nick:Nicholas}
-table[33]: {Ron:Ronald}
-table[35]: {Bee:Beatrice}
-table[37]: {Tim:Timothy}
-table[40]: {Gil:Gilbert}
-table[41]: {Pattie:Patricia}
-table[44]: {Ben:Benjamin}
-table[49]: {Tom:Thomas}
-table[50]: {Deb:Deborah}
-table[54]: {Charly:Charles}
-table[56]: {Lamy:Lamm}
-table[61]: {Vince:Vincent}
-table[62]: {Wally:Wallace}
-table[64]: {Jim:James}
-table[68]: {Babs:Barbara}
-table[69]: {Zack:Zachary}
-table[77]: {Sam:Samuel}
-table[78]: {Kenny:Kenneth}
-table[80]: {Ray:Raymond}
-table[83]: {Jake:Jacob}
-table[84]: {Hal:Harold}
-table[85]: {Emmie:Emma}
-table[88]: {Rudy:Rudolph}
-table[90]: {Tiff:Tiffany}
-table[92]: {Don:Donald}
-table[93]: {Ed:Edward}
-table[94]: {Pete:Peter}
-table[95]: {Phil:Philip}
-table[97]: {Becky:Rebecca}
-table[99]: {Lucy:Lucille}
-table[105]: {Jeff:Jefferey}
-table[106]: {Terry:Terrence}
-search_data (Kate): Katharine
-search_data (Larry): Lawrence
+table[0]: {Frank:Francis:Holly}
+table[1]: {Dolly:Dorothy:Thermal}
+table[3]: {Ricky:Patrick:Fire}
+table[4]: {Nate:Nathan:Wind}
+table[5]: {Larry:Lawrence:Darkmatter}
+table[7]: {Abbie:Abigail:Crystal}
+table[9]: {Ike:Isaac:Tornado}
+table[12]: {Will:William:Fimbul}
+table[15]: {Mae:Mary:Beam}
+table[16]: {Gerry:Gerald:Stream}
+table[20]: {Sean:John:Inferno}
+table[21]: {Rose:Rosemary:Thermal}
+table[22]: {Mike:Michael:Splash}
+table[23]: {Nell:Ellen:Anima}
+table[28]: {Leo:Leonard:Purgacion}
+table[29]: {Kim:Kimberly:Iris}
+table[30]: {Kate:Katharine:Cocytus}
+table[31]: {Nick:Nicholas:Comet}
+table[33]: {Ron:Ronald:Violence}
+table[35]: {Bee:Beatrice:Aqua}
+table[37]: {Tim:Timothy:Graviton}
+table[40]: {Gil:Gilbert:Hydrobomb}
+table[41]: {Pattie:Patricia:Squall}
+table[44]: {Ben:Benjamin:Rock}
+table[49]: {Tom:Thomas:Electric}
+table[50]: {Deb:Deborah:Meteor}
+table[54]: {Charly:Charles:Burning}
+table[56]: {Lamy:Lamm:Water}
+table[61]: {Vince:Vincent:Flood}
+table[62]: {Wally:Wallace:Curse}
+table[64]: {Jim:James:Glacier}
+table[68]: {Babs:Barbara:Nova}
+table[69]: {Zack:Zachary:Thunderstorm}
+table[77]: {Sam:Samuel:Flash}
+table[78]: {Kenny:Kenneth:Dry}
+table[80]: {Ray:Raymond:Happiness}
+table[83]: {Jake:Jacob:Stream}
+table[84]: {Hal:Harold:Alchemy}
+table[85]: {Emmie:Emma:Charm}
+table[88]: {Rudy:Rudolph:Thunderstorm}
+table[90]: {Tiff:Tiffany:AntiEvil}
+table[92]: {Don:Donald:DivineRain}
+table[93]: {Ed:Edward:Grenade}
+table[94]: {Pete:Peter:Estrella}
+table[95]: {Phil:Philip:Bubble}
+table[97]: {Becky:Rebecca:Cannon}
+table[99]: {Lucy:Lucille:Volcano}
+table[105]: {Jeff:Jefferey:Reflection}
+table[106]: {Terry:Terrence:Spark}
+search_name (Kate): Katharine
+勇者「Katharine!!」 Cocytus 発動!!
+search_name (Jeff): Jefferey
+勇者「Jefferey!!」 Reflection 発動!!
+search_name (Lucy): Lucille
+勇者「Lucille!!」 Volcano 発動!!
+search_name (Gil): Gilbert
+勇者「Gilbert!!」 Hydrobomb 発動!!
+search_name (Sean): John
+勇者「John!!」 Inferno 発動!!
