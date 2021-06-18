@@ -87,7 +87,7 @@ int main() {
     scanf("%c", &hash_f_type);
     
     printf("filename: ");
-    scanf("%s", &fname);
+    scanf("%s", fname);
     
     FILE *fp;
     fp = fopen(fname, "r");
